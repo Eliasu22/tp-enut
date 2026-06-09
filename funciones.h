@@ -85,7 +85,9 @@ const char *nombreGrupoEdad(int edad);
 // --- PROTOTIPOS: PUNTOS DEL TP ---
 void resolucionPunto1(void);
 void resolucionPunto2(void);
-void Puntos3y4(const char* ruta_archivo);
+//void Puntos3y4(const char* ruta_archivo);
+void Punto3(const char* ruta_archivo);
+void Punto4(const char* ruta_archivo);
 void resolucionPunto5(void);
 void resolucionPunto6(void);
 void resolucionPunto7(void);
