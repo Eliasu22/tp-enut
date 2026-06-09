@@ -1,0 +1,11 @@
+# Ignorar carpetas compiladas de Code::Blocks
+bin/
+obj/
+
+# Ignorar configuraciones locales del usuario
+*.layout
+*.depend
+
+# Ignorar archivos de datos y binarios que pesan mucho
+*.csv
+*.bin
