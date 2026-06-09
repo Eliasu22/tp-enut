@@ -9,3 +9,4 @@ obj/
 # Ignorar archivos de datos y binarios que pesan mucho
 *.csv
 *.bin
+*.dat
