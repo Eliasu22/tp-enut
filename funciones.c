@@ -126,21 +126,7 @@ int convertirADouble(const char *texto, double *valor)
     return 1;
 }
 
-//void leerBinario(const char *nombreArch)
-//{
-//    FILE *arch = fopen(nombreArch, "rb");
-//    if(!arch) return;
-//    tRegModif reg;
-//    printf("\nID\t| WHOG\t| WPER\t| REG\t| SEXO\t| EDU\t| TRABAJO\t\t\t| TIEMPO | VALOR\n");
-//    printf("----------------------------------------------------------------------------------------------------------\n");
-//    fread(&reg, sizeof(tRegModif), 1, arch);
-//    while(!feof(arch))
-//    {
-//        printf("%d\t| %d\t| %d\t| %d\t| %d\t| %d\t| %-25s\t| %d\t | %d\n", reg.id, reg.whog, reg.wper, reg.region, reg.sexo_sel, reg.nivel_educativo, reg.tipo_trabajo, reg.tiempo, reg.valor);
-//        fread(&reg, sizeof(tRegModif), 1, arch);
-//    }
-//    fclose(arch);
-//}
+
 
 void leerBinario(const char *nombreArch) {
     FILE *arch = fopen(nombreArch, "rb");
@@ -367,195 +353,6 @@ void resolucionPunto2()
 // PUNTOS 3 Y 4
 // =====================================================================
 
-static void limpiarComillasLocales(char *cadena)
-{
-    int len = strlen(cadena);
-    if (len >= 2 && cadena[0] == '"' && cadena[len - 1] == '"')
-    {
-        for (int i = 0; i < len - 2; i++) cadena[i] = cadena[i + 1];
-        cadena[len - 2] = '\0';
-    }
-}
-
-//void Puntos3y4(const char* ruta_archivo)
-//{
-//    FILE *archivo = fopen(ruta_archivo, "r");
-//    char linea[MAX_LINEA];
-//    char *token;
-//    int indice;
-//
-//    int indicesColumnas[4];
-//    const char *nombresColumnas[4] = {"REGION", "WHOG", "TIPO_HOGAR_DCTOTAL", "TIPO_HOGAR_DCPOREDAD"};
-//
-//    // Matrices de acumulacion Puntos 3 y 4 (Dejamos los corchetes intactos segun la regla)
-//    float p3_hogares[4][CANT_REGIONES] = {0};
-//    int p4_regs_totales[2][CANT_REGIONES] = {0};
-//    float p4_hog_totales[2][CANT_REGIONES] = {0};
-//    int p4_regs_edad[3][CANT_REGIONES] = {0};
-//    float p4_hog_edad[3][CANT_REGIONES] = {0};
-//
-//    int i, j, r, d, e;
-//    const char *descP3[4] = {"Solo hasta 13 anios", "Solo 14 y mas", "Ambos tipos", "Sin demandantes"};
-//    const char *descEdad[3] = {"hasta 13", "de 14 y mas", "ambos grupos etarios"};
-//
-//    int region, dctotal, dcporedad, es_na_poredad;
-//    float whog;
-//
-//    if (archivo == NULL)
-//    {
-//        printf("Error: No se pudo abrir %s\n", ruta_archivo);
-//        return;
-//    }
-//
-//    if (fgets(linea, MAX_LINEA, archivo) == NULL)
-//    {
-//        fclose(archivo);
-//        return;
-//    }
-//
-//    if (!obtenerColumnas(linea, nombresColumnas, indicesColumnas, 4))
-//    {
-//        printf("Error: No se encontraron todas las columnas necesarias en Puntos 3 y 4.\n");
-//        fclose(archivo);
-//        return;
-//    }
-//
-//    while (fgets(linea, MAX_LINEA, archivo) != NULL)
-//    {
-//        token = strtok(linea, " \t\r\n;");
-//        indice = 0;
-//        region = -1;
-//        dctotal = -1;
-//        dcporedad = -1;
-//        whog = 0.0;
-//        es_na_poredad = 0;
-//
-//        while (token != NULL)
-//        {
-//            quitarComillas(token);
-//
-//            // Aplicamos aritmetica de punteros para el vector de indices
-//            if (indice == *(indicesColumnas + 0))
-//            {
-//                convertirAEntero(token, &region);
-//            }
-//            else if (indice == *(indicesColumnas + 1))
-//            {
-//                whog = (float)atof(token);
-//            }
-//            else if (indice == *(indicesColumnas + 2))
-//            {
-//                convertirAEntero(token, &dctotal);
-//            }
-//            else if (indice == *(indicesColumnas + 3))
-//            {
-//                if (esFaltante(token))
-//                {
-//                    es_na_poredad = 1;
-//                }
-//                else
-//                {
-//                    convertirAEntero(token, &dcporedad);
-//                }
-//            }
-//
-//            indice++;
-//            token = strtok(NULL, " \t\r\n;");
-//        }
-//
-//        // ACUMULACION DE DATOS (Matrices con corchetes respetadas)
-//        if (region >= 1 && region <= CANT_REGIONES)
-//        {
-//            int col_reg = region - 1;
-//            int fila_p3 = -1;
-//
-//            if (es_na_poredad) fila_p3 = 3;
-//            else if (dcporedad >= 1 && dcporedad <= 3) fila_p3 = dcporedad - 1;
-//
-//            if (fila_p3 != -1)
-//            {
-//                p3_hogares[fila_p3][col_reg] += whog;
-//            }
-//
-//            if (dctotal == 0 || dctotal == 1)
-//            {
-//                p4_regs_totales[dctotal][col_reg]++;
-//                p4_hog_totales[dctotal][col_reg] += whog;
-//            }
-//
-//            if (dctotal == 1 && dcporedad >= 1 && dcporedad <= 3)
-//            {
-//                p4_regs_edad[dcporedad - 1][col_reg]++;
-//                p4_hog_edad[dcporedad - 1][col_reg] += whog;
-//            }
-//        }
-//    }
-//    fclose(archivo);
-//
-//    // --- IMPRESION DE RESULTADOS ---
-//    printf("\n%-20s %-10s %-10s %-10s %-10s %-10s %-10s\n",
-//           "tipo_hogar", "GBA", "PAMPEANA", "NOROESTE", "NORESTE", "CUYO", "PATAGONIA");
-//    for (i = 0; i < 4; i++)
-//    {
-//        // Aritmetica de punteros para el arreglo de descripciones
-//        printf("%-20s", *(descP3 + i));
-//        for (j = 0; j < CANT_REGIONES; j++)
-//        {
-//            printf(" %-10.0f", p3_hogares[i][j]);
-//        }
-//        printf("\n");
-//    }
-//
-//    printf("\n%-8s %-20s %-15s %-15s\n", "REGION", "DCTOTAL", "registros", "hogares_est");
-//    for (r = 0; r < CANT_REGIONES; r++)
-//    {
-//        for (d = 0; d < 2; d++)
-//        {
-//            if (p4_regs_totales[d][r] > 0)
-//            {
-//                printf("%-8d %-20d %-15d %-15.0f\n", r + 1, d, p4_regs_totales[d][r], p4_hog_totales[d][r]);
-//            }
-//        }
-//    }
-//
-//    printf("\n%-8s %-15s %-12s %-12s %-22s %-12s %-10s\n",
-//           "REGION", "DCPOREDAD", "registros", "hogares", "Edad", "Totales_dem", "Prop");
-//    for (r = 0; r < CANT_REGIONES; r++)
-//    {
-//        for (e = 0; e < 3; e++)
-//        {
-//            if (p4_regs_edad[e][r] > 0)
-//            {
-//                float prop = 0.0;
-//                if (p4_hog_totales[1][r] > 0)
-//                {
-//                    prop = (p4_hog_edad[e][r] / p4_hog_totales[1][r]) * 100.0f;
-//                }
-//                // Aritmetica de punteros para el arreglo de descripciones
-//                printf("%-8d %-15d %-12d %-12.0f %-22s %-12.0f %-10.2f\n",
-//                       r + 1, e + 1, p4_regs_edad[e][r], p4_hog_edad[e][r], *(descEdad + e), p4_hog_totales[1][r], prop);
-//            }
-//        }
-//    }
-//
-//    printf("\n%-25s %-10s %-10s %-10s %-10s %-10s %-10s\n",
-//           "Edad", "GBA", "PAMPEANA", "NOROESTE", "NORESTE", "CUYO", "PATAGONIA");
-//    for (e = 0; e < 3; e++)
-//    {
-//        // Aritmetica de punteros para el arreglo de descripciones
-//        printf("%-25s", *(descEdad + e));
-//        for (r = 0; r < CANT_REGIONES; r++)
-//        {
-//            float prop = 0.0;
-//            if (p4_hog_totales[1][r] > 0)
-//            {
-//                prop = (p4_hog_edad[e][r] / p4_hog_totales[1][r]) * 100.0f;
-//            }
-//            printf(" %-10.2f", prop);
-//        }
-//        printf("\n");
-//    }
-//}
 
 void Punto3(const char* ruta_archivo)
 {
@@ -776,14 +573,13 @@ void Punto4(const char* ruta_archivo)
 
 
 
-
 void resolucionPunto5()
 {
     FILE *archivo = fopen("enut2021_base.csv", "r");
     char linea[MAX_LINEA];
     char *token;
     int indice;
-    int idCol = -1, whogCol = -1, regionCol = -1, tipoHogarTotalCol = -1, cuidadoHogarCol = -1;
+    int whogCol = -1, regionCol = -1, tipoHogarTotalCol = -1, cuidadoHogarCol = -1;
 
     RegionCuidado regionesP5[CANT_REGIONES];
     RegionCuidado *regActual;
@@ -805,8 +601,8 @@ void resolucionPunto5()
     while (token != NULL)
     {
         quitarComillas(token);
-        if (strcmp(token, "ID") == 0) idCol = indice;
-        else if (strcmp(token, "WHOG") == 0) whogCol = indice;
+
+        if (strcmp(token, "WHOG") == 0) whogCol = indice;
         else if (strcmp(token, "REGION") == 0) regionCol = indice;
         else if (strcmp(token, "TIPO_HOGAR_DCTOTAL") == 0) tipoHogarTotalCol = indice;
         else if (strcmp(token, "CUIDADO_SOLO_HOGAR") == 0) cuidadoHogarCol = indice;
@@ -847,19 +643,45 @@ void resolucionPunto5()
     fclose(archivo);
 
     printf("\n%-45s %-10s %-10s %-10s %-10s %-10s %-10s\n", "CUIDADO_SOLO_HOGAR", "GBA", "PAMPEANA", "NOROESTE", "NORESTE", "CUYO", "PATAGONIA");
+
+    // fila 1
     printf("%-45s", "Ninguno recibe cuidado exclusivo del hogar");
     for (indice = 0; indice < CANT_REGIONES; indice++)
     {
         regActual = regionesP5 + indice;
         double totalRegion = regActual->hogaresNinguno + regActual->hogaresExclusivo;
-        printf(" %9.2lf%%", (totalRegion > 0.0) ? (regActual->hogaresNinguno / totalRegion) * 100.0 : 0.0);
+        double porcentaje;
+
+        if (totalRegion > 0.0)
+        {
+            porcentaje = (regActual->hogaresNinguno / totalRegion) * 100.0;
+        }
+        else
+        {
+            porcentaje = 0.0;
+        }
+
+        printf(" %9.2lf%%", porcentaje);
     }
+
+    // fila 2
     printf("\n%-45s", "Cuidado exclusivo del propio hogar");
     for (indice = 0; indice < CANT_REGIONES; indice++)
     {
         regActual = regionesP5 + indice;
         double totalRegion = regActual->hogaresNinguno + regActual->hogaresExclusivo;
-        printf(" %9.2lf%%", (totalRegion > 0.0) ? (regActual->hogaresExclusivo / totalRegion) * 100.0 : 0.0);
+        double porcentaje;
+
+        if (totalRegion > 0.0)
+        {
+            porcentaje = (regActual->hogaresExclusivo / totalRegion) * 100.0;
+        }
+        else
+        {
+            porcentaje = 0.0;
+        }
+
+        printf(" %9.2lf%%", porcentaje);
     }
     printf("\n");
 }
@@ -917,26 +739,49 @@ int guardarMatrizBinaria(const char *nombreArchivo, const FilaReporte *tabla, in
 {
     FILE *binario = fopen(nombreArchivo, "wb");
     if (binario == NULL) return 0;
-    for (int i = 0; i < cantFilas; i++)
+
+    const FilaReporte *ptrFila;
+    const FilaReporte *limiteTabla = tabla + cantFilas;
+
+    for (ptrFila = tabla; ptrFila < limiteTabla; ptrFila++)
     {
         double porcentajesFila[CANT_TRABAJOS];
-        for (int j = 0; j < CANT_TRABAJOS; j++)
+        double *ptrPorcentaje;
+
+        const Trabajo *ptrTrabajo = ptrFila->trabajos;
+        const Trabajo *limiteTrabajo = ptrFila->trabajos + CANT_TRABAJOS;
+
+
+        for (ptrPorcentaje = porcentajesFila; ptrTrabajo < limiteTrabajo; ptrTrabajo++)
         {
-            const Trabajo *celda = &(tabla + i)->trabajos[j];
-            *(porcentajesFila + j) = (celda->totalPoblacion > 0.0) ? (celda->realizanActividad / celda->totalPoblacion) * 100.0 : 0.0;
+
+            if (ptrTrabajo->totalPoblacion > 0.0)
+            {
+                *ptrPorcentaje = (ptrTrabajo->realizanActividad / ptrTrabajo->totalPoblacion) * 100.0;
+            }
+            else
+            {
+                *ptrPorcentaje = 0.0;
+            }
+
+            ptrPorcentaje++;
         }
+
+        // array temporal en el archivo binario
         fwrite(porcentajesFila, sizeof(double), CANT_TRABAJOS, binario);
     }
+
     fclose(binario);
     return 1;
 }
+
 
 void procesarPuntoTrabajo(const char *nombreVariableFiltro, int *pVarFiltroCol, FilaReporte *tablaDestino, int cantFilasDestino)
 {
     FILE *archivo = fopen("enut2021_base.csv", "r");
     char linea[MAX_LINEA];
     char *token;
-    int indice, idCol = -1, wperCol = -1, tpAutoconsumoCol = -1, tpTrabajoTotalCol = -1, tpTnrCol = -1;
+    int indice, wperCol = -1, tpAutoconsumoCol = -1, tpTrabajoTotalCol = -1, tpTnrCol = -1;
     *pVarFiltroCol = -1;
 
     if (archivo == NULL) return;
@@ -951,8 +796,8 @@ void procesarPuntoTrabajo(const char *nombreVariableFiltro, int *pVarFiltroCol, 
     while (token != NULL)
     {
         quitarComillas(token);
-        if (strcmp(token, "ID") == 0) idCol = indice;
-        else if (strcmp(token, "WPER") == 0) wperCol = indice;
+
+        if (strcmp(token, "WPER") == 0) wperCol = indice;
         else if (strcmp(token, nombreVariableFiltro) == 0) *pVarFiltroCol = indice;
         else if (strcmp(token, "TP_GRANGRUPO_OCUPACIONYAUTOCONSUMO") == 0) tpAutoconsumoCol = indice;
         else if (strcmp(token, "TP_GRANGRUPO_TRABAJOTOTAL") == 0) tpTrabajoTotalCol = indice;
@@ -998,7 +843,11 @@ void procesarPuntoTrabajo(const char *nombreVariableFiltro, int *pVarFiltroCol, 
             else if (variableFiltro >= 65) filaDestino = 2;
         }
 
-        if (filaDestino != -1) acumularDatosTrabajo(tablaDestino, filaDestino, wper, tpAutoconsumo, tpTnr, tpTrabajoTotal);
+        if (filaDestino != -1)
+        {
+            acumularDatosTrabajo(tablaDestino, filaDestino, wper, tpAutoconsumo, tpTnr, tpTrabajoTotal);
+
+        }
     }
     fclose(archivo);
 }
@@ -1007,12 +856,15 @@ void resolucionPunto6()
 {
     int sexoSelCol = -1;
     FilaReporte tablaP6[2];
-    for (int i=0; i<2; i++)
+    FilaReporte *ptrFila;
+    Trabajo *ptrTrabajo;
+
+    for (ptrFila = tablaP6; ptrFila < tablaP6 + 2; ptrFila++)
     {
-        for (int j=0; j<CANT_TRABAJOS; j++)
+        for (ptrTrabajo = ptrFila->trabajos; ptrTrabajo < ptrFila->trabajos + CANT_TRABAJOS; ptrTrabajo++)
         {
-            tablaP6[i].trabajos[j].totalPoblacion = 0.0;
-            tablaP6[i].trabajos[j].realizanActividad = 0.0;
+            ptrTrabajo->totalPoblacion = 0.0;
+            ptrTrabajo->realizanActividad = 0.0;
         }
     }
 
@@ -1029,12 +881,16 @@ void resolucionPunto7()
 {
     int grupoEdadSelCol = -1;
     FilaReporte tablaP7[3];
-    for (int i=0; i<3; i++)
+    FilaReporte *ptrFila;
+    Trabajo *ptrTrabajo;
+
+
+    for (ptrFila = tablaP7; ptrFila < tablaP7 + 3; ptrFila++)
     {
-        for (int j=0; j<CANT_TRABAJOS; j++)
+        for (ptrTrabajo = ptrFila->trabajos; ptrTrabajo < ptrFila->trabajos + CANT_TRABAJOS; ptrTrabajo++)
         {
-            tablaP7[i].trabajos[j].totalPoblacion = 0.0;
-            tablaP7[i].trabajos[j].realizanActividad = 0.0;
+            ptrTrabajo->totalPoblacion = 0.0;
+            ptrTrabajo->realizanActividad = 0.0;
         }
     }
 
@@ -1130,10 +986,26 @@ void punto_8 (const char *nombreArchOrigen, const char *nombreArchDest)
         reg.region = 0;
         reg.sexo = 0;
         reg.nivelEducativo = 0;
-        for(int i = 0; i < 4; i++)
+
+        // Declaramos los punteros que van a recorrer los sub-arrays
+        int *ptrTcs = reg.tcs;
+        int *ptrTp = reg.tp;
+
+        // Definimos los límites de memoria hasta donde deben llegar
+        int *limiteTcs = reg.tcs + 4;
+        int *limiteTp = reg.tp + 4;
+
+        // Recorrido y asignación con aritmética de punteros
+        while (ptrTcs < limiteTcs)
         {
-            reg.tcs[i] = 0;
-            reg.tp[i] = 0;
+            *ptrTcs = 0;
+            ptrTcs++;
+        }
+
+        while (ptrTp < limiteTp)
+        {
+            *ptrTp = 0;
+            ptrTp++;
         }
 
         while (token != NULL)

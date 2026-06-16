@@ -1,10 +1,8 @@
-#include <stdio.h>
-#include <stdlib.h>
 #include "funciones.h"
 
 int main(int argc, char *argv[])
 {
-    // Si no se proveen los parametros por consola, definimos uno por defecto para no frenar la ejecucion
+
     char* archivoBinario = ARCH_ENUT_MOD;
     if(argc == 2)
     {
@@ -15,6 +13,9 @@ int main(int argc, char *argv[])
 
     do
     {
+        // Limpia la pantalla antes de volver a dibujar el menú principal
+        system("cls");
+
         printf("\n========================================================\n");
         printf("  TRABAJO PRACTICO ENUT 2021 - TOPICOS DE PROGRAMACION\n");
         printf("========================================================\n");
@@ -33,10 +34,16 @@ int main(int argc, char *argv[])
         printf("========================================================\n");
         printf("Ingrese una opcion: ");
 
+        // limpia el buffer
         if (scanf("%d", &opcion) != 1)
         {
             while (getchar() != '\n');
             opcion = -1;
+        }
+
+        if (opcion > 0 && opcion <= 11)
+        {
+            system("cls");
         }
 
         switch(opcion)
@@ -51,19 +58,15 @@ int main(int argc, char *argv[])
             Punto3(ARCH_ENUT);
             break;
         case 4:
-
             Punto4(ARCH_ENUT);
             break;
         case 5:
-
             resolucionPunto5();
             break;
         case 6:
-
             resolucionPunto6();
             break;
         case 7:
-
             resolucionPunto7();
             break;
         case 8:
@@ -71,7 +74,6 @@ int main(int argc, char *argv[])
             BinATexto(ARCH_ENUT_MOD, "enut2021_procesado_prueba.csv");
             printf("Punto 8: Archivo binario '%s' generado con exito.\n", ARCH_ENUT_MOD);
             leerBinario(ARCH_ENUT_MOD);
-
             break;
         case 9:
             printf("\nEjecutando Punto 9...\n");
@@ -85,7 +87,7 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    printf("Error: No se pudo leer el binario. Recorda ejecutar el Punto 8 primero.\n");
+                    printf("Error: No se pudo leer el binario.  Ejecutar el Punto 8 primero.\n");
                 }
             }
             break;
@@ -95,12 +97,13 @@ int main(int argc, char *argv[])
                 Vector vec;
                 if (CrearVector(&vec, sizeof(tRegModif), 10000) && bajartxt(archivoBinario, &vec) == 0)
                 {
+                    OrdenarSeleccion(&vec, cmpTipoTrabajo);
                     Punto_10(&vec);
                     DestruirVector(&vec);
                 }
                 else
                 {
-                    printf("Error: No se pudo leer el binario. Recorda ejecutar el Punto 8 primero.\n");
+                    printf("Error: No se pudo leer el binario. Ejecutar el Punto 8 primero.\n");
                 }
             }
             break;
@@ -116,7 +119,7 @@ int main(int argc, char *argv[])
                 }
                 else
                 {
-                    printf("Error: No se pudo leer el binario. Recorda ejecutar el Punto 8 primero.\n");
+                    printf("Error: No se pudo leer el binario. Ejecutar el Punto 8 primero.\n");
                 }
             }
             break;
@@ -127,8 +130,16 @@ int main(int argc, char *argv[])
             printf("\nOpcion no valida. Por favor, ingrese un numero del 0 al 11.\n");
         }
 
+        // Si no eligió salir, mete una pausa antes de volver a evaluar el ciclo
+        if (opcion != 0)
+        {
+            printf("\n");
+            system("pause");
+        }
+
     }
     while(opcion != 0);
 
     return 0;
 }
+
