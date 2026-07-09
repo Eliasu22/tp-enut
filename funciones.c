@@ -1315,3 +1315,211 @@ int Punto_11(Vector* v)
     destruir_matriz((void**)mat, 10);
     return 0;
 }
+
+
+//Crear una función desde cero que lea el archivo .csv y calcule cuántas personas
+// estimadas (WPER) hay en total, separadas únicamente por SEXO (SEXO_SEL: 1 para Mujer, 2 para Hombre).
+
+// Bloque 1 y 2: Necesitamos buscar dos columnas (WPER Y SEXO_SEXL)
+// Bloque 5 (suma): En vez de 6 regiones, se tendria 2 acumuladores (uno para hombres y otro para mujeres)
+
+//void punto_12 (const char *nombreArchivoEnut)
+//{
+//    /*** BLOQUE 1: Abrir archivo + variables ***/
+//    FILE *archivo = fopen(nombreArchivoEnut, "rt");
+//    if(!archivo)
+//        return;
+//
+//    char linea[MAX_LINEA];
+//    char *aux;
+//    int indice;
+//
+//    // variables acumuladoras
+//    double wper_mujeres = 0, wper_hombres = 0;
+//
+//    // variables temporales: para guardar el dato del registro leido
+//    int sexo;
+//    double wper;
+//
+//    /*** BLOQUE 2: Buscar columnas ***/
+//
+//    // leo el primer registro (encabezado)
+//    if(fgets(linea, MAX_LINEA, archivo) == NULL)
+//    {
+//        fclose(archivo);
+//        return;
+//    }
+//
+//    // Preparamos la busqueda
+//    // Necesito un array de int para guardar los indices
+//    // Necesito un array de string (const char*) con los nombres de las 2 columnas que buscamos
+//    // "SEXO_SEL" Y "WPER"
+//    int indiceColumna[2];
+//    const char* nombresColumnas[2] = {"SEXO_SEL", "WPER"};
+//
+//    // Se llama a obtener columnas
+//    obtenerColumnas(linea, nombresColumnas, indiceColumna, 2);
+//
+//    // Sacbemos en que posiscion (nro columna) estan los datos
+//    // estan guardados en indiceColumna[0] e indiceColumna[1]
+//
+//    /*** BLOQUE 3: Leemos todos los registros de dichas columnas encontradas ***/
+//    // Leemos hasta que no haya mas lineas en el archivo
+//    while(fgets(linea, MAX_LINEA, archivo) != NULL)
+//    {
+//        // reinicio variables para la nueva persona
+//        sexo = -1;
+//        wper = 0;
+//
+//        // Leemos el primer registro despues del heaader
+//        // 112610;778;1580;1;1;4;1;1;2;1;1;1;1;1;1;1;NA
+//        aux = strtok(linea, " \t\r\n;");
+//        indice = 0;
+//
+//        // 112610 (id = 1)
+//
+//        /*** BLOQUE 4: Cortar y extraeer la columna sola ***/
+//        while(aux != NULL)
+//        {
+//            quitarComillas(aux);
+//
+//            // Extraer los datos usando punteros
+//
+//            if (indice == indiceColumna[0]) // ¿Esta en el registro con columna SEXO_SEL?
+//            {
+//                convertirAEntero(aux, &sexo); // guardo la variable apuntada por aux en la variable sexo
+//            }
+//            else if(indice == indiceColumna[1])
+//            {
+//                convertirADouble(aux, &wper); // guardo lo apuntado por aux en wper (wper)
+//            }
+//
+//            indice++;
+//            aux = strtok(NULL, " \t\r\n;");
+//
+//        }
+//
+//        /*** BLOQUE 5: Filtado de filas***/
+//        // LLegamos aca cuando ya se termino el registro
+//        // Nuestras variables 'sexo' y 'wper' ya tienen los datos
+//
+//        if(sexo == 1)
+//        {
+//            // acumular wper leido a wper_mujeres
+//            wper_mujeres += wper;
+//        }
+//        else if(sexo == 2)
+//        {
+//            // acumular wper en wper_hombres
+//            wper_hombres+=wper;
+//        }
+//
+//
+//    }
+//
+//    fclose(archivo);
+//    printf("\n--- RESULTADOS PUNTO 12 (SIMULACRO) ---\n");
+//    printf("WPER Total Mujeres: %.2f\n", wper_mujeres);
+//    printf("WPER Total Hombres: %.2f\n", wper_hombres);
+//}
+
+
+void punto_12 (const char *nombreArchivoEnut)
+{
+    /*** BLOQUE 1: Abrir archivo + variables ***/
+    FILE *archivo = fopen(nombreArchivoEnut, "rt");
+    if(!archivo)
+        return;
+
+    char linea[MAX_LINEA];
+    char *aux;
+    int indice;
+
+    // variables acumuladoras
+    double wper_mujeres = 0, wper_hombres = 0;
+
+    // variables temporales: para guardar el dato del registro leido
+    int sexo;
+    double wper;
+
+    /*** BLOQUE 2: Buscar columnas ***/
+
+    // leo el primer registro (encabezado)
+    if(fgets(linea, MAX_LINEA, archivo) == NULL)
+    {
+        fclose(archivo);
+        return;
+    }
+
+    // Preparamos la busqueda
+    // Necesito un array de int para guardar los indices
+    // Necesito un array de string (const char*) con los nombres de las 2 columnas que buscamos
+    // "SEXO_SEL" Y "WPER"
+    int indiceColumna[2];
+    const char* nombresColumnas[2] = {"SEXO_SEL", "WPER"};
+
+    // Se llama a obtener columnas
+    obtenerColumnas(linea, nombresColumnas, indiceColumna, 2);
+
+    // Sacbemos en que posiscion (nro columna) estan los datos
+    // estan guardados en indiceColumna[0] e indiceColumna[1]
+
+    /*** BLOQUE 3: Leemos todos los registros de dichas columnas encontradas ***/
+    // Leemos hasta que no haya mas lineas en el archivo
+    while(fgets(linea, MAX_LINEA, archivo) != NULL)
+    {
+        sexo = -1;
+        wper = 0;
+        indice = 0;
+
+        char *ini = linea;
+        char *aux = linea;
+
+        // 112610;778;1580;1;1;..2;
+
+        // mientras no lleguemos a fin de registro
+        while(*aux != '\0')
+        {
+            // Si encontramos el separador o el salto de linea
+            if(*aux == ';' || *aux == '\n')
+            {
+                *aux = '\0'; //112610\0778
+                //                   ^
+
+                if(indice == indiceColumna[0])
+                {
+                    convertirAEntero(ini, &sexo);
+                }
+                else if (indice == indiceColumna[1])
+                {
+                    convertirADouble(ini, &wper);
+                }
+
+                indice++;
+                ini = aux + 1;
+            }
+
+            aux++;
+        }
+
+
+        if(sexo == 1)
+        {
+            // acumular wper leido a wper_mujeres
+            wper_mujeres += wper;
+        }
+        else if(sexo == 2)
+        {
+            // acumular wper en wper_hombres
+            wper_hombres+=wper;
+        }
+
+
+    }
+
+    fclose(archivo);
+    printf("\n--- RESULTADOS PUNTO 12 (SIMULACRO) ---\n");
+    printf("WPER Total Mujeres: %.2f\n", wper_mujeres);
+    printf("WPER Total Hombres: %.2f\n", wper_hombres);
+}
+
